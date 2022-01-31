@@ -1,6 +1,7 @@
 package com.github.franckyi.cmpdl.task.mpimport;
 
 import com.github.franckyi.cmpdl.CMPDL;
+import com.github.franckyi.cmpdl.api.response.Addon;
 import com.github.franckyi.cmpdl.api.response.AddonFile;
 import com.github.franckyi.cmpdl.model.ModpackManifest;
 import com.github.franckyi.cmpdl.task.TaskBase;
@@ -53,22 +54,33 @@ public class DownloadModsTask extends TaskBase<Void> {
                 updateTitle(String.format("Downloading mods (%d/%d)", i + 1, max));
                 ModpackManifest.ModpackManifestMod mod = mods.get(i - start);
                 CMPDL.progressPane.getController().log("Resolving file %d:%d", mod.getProjectId(), mod.getFileId());
-                AddonFile file = CMPDL.getAPI().getFile(mod.getProjectId(), mod.getFileId()).execute().body();
-                if (file != null) {
-                    DownloadFileTask task = new DownloadFileTask(file.getDownloadUrl(), new File(modsFolder, file.getFileName()));
-                    setTask(task);
-                    CMPDL.progressPane.getController().log("Downloading file %s", file.getFileName().replaceAll("%", ""));
-                    task.setOnSucceeded(e -> {
-                        try {
-                            writer.write(String.format("%d:%d\n", mod.getProjectId(), mod.getFileId()));
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
-                        }
-                    });
-                    task.run();
-                } else {
-                    CMPDL.progressPane.getController().log("!!! Unknown file %d:%d - skipping !!!", mod.getProjectId(), mod.getFileId());
+
+                AddonFile file = null;
+                for (int j = 0; j < 15; j++) {
+                    try {
+                        file = CMPDL.getAPI().getFile(mod.getProjectId(), mod.getFileId()).execute().body();
+                    }
+                    catch (Exception ex) {
+                        continue;
+                    }
+                    break;
                 }
+
+                if (file == null) {
+                    throw new IOException("Жопа!");
+                }
+
+                DownloadFileTask task = new DownloadFileTask(file.getDownloadUrl(), new File(modsFolder, file.getFileName()));
+                setTask(task);
+                CMPDL.progressPane.getController().log("Downloading file %s", file.getFileName().replaceAll("%", ""));
+                task.setOnSucceeded(e -> {
+                    try {
+                        writer.write(String.format("%d:%d\n", mod.getProjectId(), mod.getFileId()));
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                });
+                task.run();
             }
         }
         return null;

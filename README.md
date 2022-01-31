@@ -2,6 +2,9 @@
 ### A lightweight alternative to Twitch App for downloading Minecraft modpacks.
 
 ---
+##### Dirty hack version to avoid timeout errors.
+
+---
 ## [Downloads](https://github.com/Franckyi/CMPDL/releases)
 CMPDL is a Java application created by Franckyi, based on [Vazkii's project](https://github.com/Vazkii/CMPDL). It allows you to download your favorite modpacks from websites like [CurseForge](https://minecraft.curseforge.com/modpacks) or [Feed the Beast](https://www.feed-the-beast.com/modpacks). For users who don't like the Twitch App and still want to enjoy Minecraft modpacks, this app is made for you !
 

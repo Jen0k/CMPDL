@@ -28,6 +28,8 @@ public class DownloadFileTask extends TaskBase<Void> {
         URI uri = new URI(url.getProtocol(), url.getHost(), url.getFile(), null);
         if (!dst.exists()) dst.createNewFile();
         HttpURLConnection connection = (HttpURLConnection) new URL(uri.toASCIIString()).openConnection();
+        connection.setConnectTimeout(60000);
+        connection.setReadTimeout(60000);
         int size = connection.getContentLength();
         BufferedInputStream bis = new BufferedInputStream(connection.getInputStream());
         FileOutputStream fis = new FileOutputStream(dst);
