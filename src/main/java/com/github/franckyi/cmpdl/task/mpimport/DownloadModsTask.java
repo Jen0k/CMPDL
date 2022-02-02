@@ -56,18 +56,20 @@ public class DownloadModsTask extends TaskBase<Void> {
                 CMPDL.progressPane.getController().log("Resolving file %d:%d", mod.getProjectId(), mod.getFileId());
 
                 AddonFile file = null;
-                for (int j = 0; j < 15; j++) {
+                int maxAttempts = 15;
+                for (int j = 0; j < maxAttempts; j++) {
                     try {
+                        CMPDL.progressPane.getController().log("Attempt %o", j + 1);
                         file = CMPDL.getAPI().getFile(mod.getProjectId(), mod.getFileId()).execute().body();
                     }
-                    catch (Exception ex) {
+                    catch (IOException ex) {
+                        if (j == maxAttempts - 1) {
+                            throw ex;
+                        }
+
                         continue;
                     }
                     break;
-                }
-
-                if (file == null) {
-                    throw new IOException("Жопа!");
                 }
 
                 DownloadFileTask task = new DownloadFileTask(file.getDownloadUrl(), new File(modsFolder, file.getFileName()));

@@ -23,7 +23,7 @@ import java.util.concurrent.Executors;
 public class CMPDL extends Application {
 
     public static final String NAME = "CMPDL";
-    public static final String VERSION = "2.3.0_1";
+    public static final String VERSION = "2.3.0_2";
     public static final String AUTHOR = "Franckyi";
     public static final String TITLE = String.format("%s v%s by %s", NAME, VERSION, AUTHOR);
 
